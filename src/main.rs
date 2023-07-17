@@ -29,7 +29,7 @@ fn get_memo_path() -> PathBuf {
 }
 
 fn version(args: &[String]) {
-    if args.len() > 0 {
+    if !args.is_empty() {
         print_unknown_command("version", &args.join(" "));
         return;
     }
@@ -55,19 +55,19 @@ fn get_memo_file_names() -> Vec<String> {
     for entry in std::fs::read_dir(memo_path).unwrap() {
         let entry = entry.unwrap();
         let file_name = entry.file_name();
-        file_names.push(file_name.to_str().unwrap().split(".").collect::<Vec<&str>>()[0].to_string());
+        file_names.push(file_name.to_str().unwrap().split('.').collect::<Vec<&str>>()[0].to_string());
     }
     file_names
 }
 
 fn add(args: &[String]) {
-    if args.len() < 1 {
+    if args.is_empty() {
         println!("Example: 'memo add New memo with text'");
         return;
     }
     let mut next_index = 1;
     let file_names = get_memo_file_names();
-    if file_names.len() > 0 {
+    if !file_names.is_empty() {
         let last_file_name = &file_names[file_names.len() - 1];
         if last_file_name.parse::<usize>().is_err() {
             std::fs::remove_file(get_memo_path().join(last_file_name)).unwrap();
@@ -86,7 +86,7 @@ fn add(args: &[String]) {
 }
 
 fn delete(args: &[String]) {
-    if args.len() > 1 || args.len() == 0 {
+    if args.len() > 1 || args.is_empty() {
         print_unknown_command("delete", &args.join(" "));
         return;
     }
@@ -111,7 +111,7 @@ fn delete(args: &[String]) {
 }
 
 fn show(args: &[String]) {
-    if args.len() > 1 || args.len() == 0 {
+    if args.len() > 1 || args.is_empty() {
         print_unknown_command("show", &args.join(" "));
         return;
     }
@@ -136,13 +136,13 @@ fn show(args: &[String]) {
 }
 
 fn list(args: &[String]) {
-    if args.len() > 0 {
+    if !args.is_empty() {
         print_unknown_command("list", &args.join(" "));
         return;
     }
 
     let file_names = get_memo_file_names();
-    if file_names.len() == 0 {
+    if file_names.is_empty() {
         println!("No memos");
         return;
     }
@@ -154,7 +154,7 @@ fn list(args: &[String]) {
 }
 
 fn clean(args: &[String]) {
-    if args.len() > 0 {
+    if !args.is_empty() {
         print_unknown_command("clean", &args.join(" "));
         return;
     }
