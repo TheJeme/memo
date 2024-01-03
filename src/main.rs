@@ -6,20 +6,20 @@ use std::path::PathBuf;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        help();
+        list(&[]);
         return;
     }
     std::fs::create_dir_all(get_memo_path()).unwrap();
     let command = &args[1];
     let extra_args = &args[2..];
     match command.as_str() {
-        "help" | "-h" | "--help" => help(),
-        "add" | "new" | "-a" | "-n" => add(extra_args),
-        "show" | "see" | "open" | "-s" | "-o"  => show(extra_args),
-        "delete" | "remove" | "-d" | "-r" => delete(extra_args),
+        "help" | "-h" | "--help" | "h" => help(),
+        "add" | "new" | "-a" | "-n" | "a" | "n" => add(extra_args),
+        "show" | "see" | "open" | "-s" | "-o" | "s" | "o" => show(extra_args),
+        "delete" | "remove" | "-d" | "-r" | "d" | "r" => delete(extra_args),
         "list" | "all" | "-l" => list(extra_args),
-        "clean" | "deleteall" | "removeall" | "-c" => clean(extra_args),
-        "version" | "-v" | "--version" => version(extra_args),
+        "clean" | "deleteall" | "removeall" => clean(extra_args),
+        "version" | "-v" | "--version" | "v" => version(extra_args),
         _ => print_unknown_command("", command)
     }
 }
@@ -38,11 +38,10 @@ fn version(args: &[String]) {
 
 fn help() {
     println!("Commands & Usage:");
-    println!(" memo list - List all memos");
+    println!(" memo add [M] - Add memo");
+    println!(" memo show [X] - Show memo");
+    println!(" memo delete [X] - Delete memo");
     println!(" memo clean - Delete all memos");
-    println!(" memo add <memo> - Add memo");
-    println!(" memo show <index> - Show memo");
-    println!(" memo delete <index> - Delete memo");
 }
 
 fn print_unknown_command(command: &str, args: &str) {
@@ -107,7 +106,7 @@ fn delete(args: &[String]) {
     let memo_path = get_memo_path().join(format!("{}.txt", file_names[index - 1]));
     std::fs::remove_file(memo_path).unwrap();
 
-    println!("Deleted memo: {}", index);
+    println!("Deleted memo: [{}]", index);
 }
 
 fn show(args: &[String]) {
@@ -131,7 +130,7 @@ fn show(args: &[String]) {
     }
 
     let file_content = std::fs::read_to_string(get_memo_path().join(format!("{}.txt", file_names[index - 1]))).unwrap();
-    println!("Memo {}: {}", index, file_content);
+    println!("Memo [{}]: {}", index, file_content);
     
 }
 
@@ -149,7 +148,7 @@ fn list(args: &[String]) {
     println!("Memos:");
     for (index, file_name) in file_names.iter().enumerate() {
         let file_content = std::fs::read_to_string(get_memo_path().join(format!("{}.txt", file_name))).unwrap();
-        println!(" {}. {}", index + 1, file_content);
+        println!(" [{}] {}", index + 1, file_content);
     }
 }
 
@@ -166,5 +165,5 @@ fn clean(args: &[String]) {
         std::fs::remove_file(memo_path.join(file_name)).unwrap();
     }
 
-    println!("Cleaned all memos");
+    println!("Removed all memos");
 }
